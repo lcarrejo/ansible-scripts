@@ -1,0 +1,33 @@
+
+# ========== Information about this ansible script file ================
+
+# This is the file which ansible checks to see which network interfaces of the hosts (defined in hosts-file)  ping test has to be done.
+# In this file define first 3 octets of the network interfaces (under item.startswith line) which you want to ping of hosts (which are defined in hosts-file)
+# Change the 10.x, 192.x, 172.x IP subnet first 3 octets in this file to the octets corresponding to your hosts which you want to ping.
+
+
+# ========================================================================
+
+- hosts: all
+  remote_user: root
+  gather_facts: true
+  vars:
+    ips: "[]"
+  tasks:
+
+  - name: Delete ipaddresses.txt
+    local_action: copy content="" dest=/tmp/ipaddresses.txt force=yes
+    run_once: true
+
+  - name: Add all IP addresses
+    local_action: lineinfile line={{ item }} dest=/tmp/ipaddresses.txt
+    with_items: "{{ ansible_all_ipv4_addresses }}"
+    when: item.startswith("10.11.12.") or item.startswith("192.168.2.") or item.startswith("192.168.5.") or item.startswith("172.17.0.") or item.startswith("172.16.0.")
+
+  - name: ping all IP addresses
+    shell: "ping {{ item }} -c 1"
+    with_lines: cat "/tmp/ipaddresses.txt"
+    register: result
+    changed_when: "result.rc != 0"
+
+

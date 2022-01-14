@@ -1,0 +1,20 @@
+
+# ======= Information about this ansible script file ================
+
+# In this hosts-file define the IPs to which ansible should connect and do the ping test on all network interfaces
+# If user/password is specified for any listed IPs then ansible connects using the user/passowrd defined under all:vars
+# If user/password is specified next to the IP then ansible connects using that user/password
+# Replace the username and password in this file to the username and password you want ansible to connect to the IPs listed.
+# Replace the 10.x IP's with the range of IP's which you want ansible to connect to do ping tests. You can add any number of IPs to this file. Each IP should be in one line under [ping]
+
+# ========================================================================
+
+[all:vars]
+ansible_ssh_user=root
+ansible_ssh_pass=ovsroot
+
+[ping]
+10.11.12.240
+10.11.12.244
+10.11.12.141 ansible_ssh_pass=ovsroot
+10.11.12.147 ansible_ssh_pass=ovsroot
